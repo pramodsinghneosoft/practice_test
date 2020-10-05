@@ -1,0 +1,12 @@
+{
+    "key_home": "Casa",
+    "key_password": "Senha",
+    "key_must_be_6_charachters": "Deve ter pelo menos 6 caracteres",
+    "key_email": "O email",
+    "key_please_enter_valid_mail": "Por favor insira um correio válido",
+    "key_last_name": "Último nome",
+    "key_enter_last_name": "Insira o último nome",
+    "key_first_name": "Primeiro nome",
+    "key_enter_first_name": "Introduza o primeiro nome",
+    "key_next": "Próximo"
+}

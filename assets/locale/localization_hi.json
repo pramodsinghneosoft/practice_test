@@ -1,0 +1,12 @@
+{
+    "key_home": "घर",
+    "key_password": "कुंजिका",
+    "key_must_be_6_charachters": "कम से कम 6 अक्षर होने चाहिए",
+    "key_email": "ईमेल",
+    "key_please_enter_valid_mail": "कृपया मान्य मेल दर्ज करें",
+    "key_last_name": "अंतिम नाम",
+    "key_enter_last_name": "अंतिम नाम दर्ज करो",
+    "key_first_name": "पहला नाम",
+    "key_enter_first_name": "पहला नाम दर्ज करें",
+    "key_next": "आगे"
+}
