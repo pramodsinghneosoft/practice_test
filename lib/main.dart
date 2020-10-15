@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_test/bloc_equatable_page/bloc/userbloc_bloc.dart';
 import 'package:sqflite_test/bloc_equatable_page/model/user_repository.dart';
@@ -8,16 +9,20 @@ import 'package:sqflite_test/bloc_equatable_page/pages/user_view.dart';
 import 'package:sqflite_test/bloc_pattern/bloc_view.dart';
 import 'package:sqflite_test/bloc_pattern/posts_view.dart';
 import 'package:sqflite_test/bottom_tabbar/bottom_tab_view.dart';
+import 'package:sqflite_test/email_validator_page/email_validate_page.dart';
 import 'package:sqflite_test/flappy_searchbar/flappy_search_view.dart';
 import 'package:sqflite_test/get_it_files/get_it_view.dart';
 import 'package:sqflite_test/get_it_files/service_locator_view.dart';
+import 'package:sqflite_test/getx_page/view/getx_page_view.dart';
 import 'package:sqflite_test/listview_filter/listview_filter_view.dart';
 import 'package:sqflite_test/localizations/application_view.dart';
 import 'package:sqflite_test/localizations/apptransaltion_delegate_view.dart';
+import 'package:sqflite_test/localize_page/localize_page_view.dart';
 import 'package:sqflite_test/navigator_service/navigator_service.dart';
 import 'package:sqflite_test/no_captcha/nocaptha_view.dart';
 import 'package:sqflite_test/provider_files/provider_model.dart';
 import 'package:sqflite_test/recaptcha_page/recaptcha_page_view.dart';
+import 'package:sqflite_test/sliver_page/sliver_page_example_view.dart';
 import 'package:sqflite_test/speech_to_text_view.dart/speechtotext.dart';
 import 'package:sqflite_test/tabbar/tab_bar_view.dart';
 import 'package:sqflite_test/wordpress_page/wordpress_page_view.dart';
@@ -44,7 +49,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'SQFLite Demo',
       theme: ThemeData(
@@ -56,7 +61,11 @@ class _MyAppState extends State<MyApp> {
         create: (context) => UserblocBloc(UserRepositoryImpl()),
         child: ChangeNotifierProvider(
             create: (context) => ProviderCounterModel(),
-            child: RecaptchaPageView()
+            child: LocalizaPageView()
+            // EmailValidatorPage(),
+            // GetXPageView(),
+            //  SliverPageView()
+            // RecaptchaPageView()
             // UserDataView()
             // SpeechTextView()
             // WordPressApiView(),
@@ -90,10 +99,19 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: [
-        const Locale("en", ""),
-        const Locale("hi", ""),
-        const Locale("pt", ""),
+        const Locale("en", "US"),
+        const Locale("hi", "IN"),
+        const Locale("pt", "PT"),
       ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (var supportedLocaleLanguage in supportedLocales) {
+          if (supportedLocaleLanguage.languageCode == locale.languageCode &&
+              supportedLocaleLanguage.countryCode == locale.countryCode) {
+            return supportedLocaleLanguage;
+          }
+        }
+        return supportedLocales.first;
+      },
     );
   }
 

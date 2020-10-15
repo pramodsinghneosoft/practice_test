@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:sqflite_test/package_info_page/package_info_view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class RecaptchaPageView extends StatefulWidget {
@@ -55,6 +57,15 @@ class _RecaptchaPageViewState extends State<RecaptchaPageView> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Queue4y"),
+        actions: [
+          FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                  return PackageInfoView();
+                }));
+              },
+              child: Text("Go to next Page"))
+        ],
       ),
       body: Stack(
         children: <Widget>[

@@ -15,6 +15,6 @@ void serviceLocator() {
 
   locator.registerFactory(() => NavigatorService());
   locator.registerFactory(() => CounterBloc());
-  locator.registerFactory(() => PostsBloc());
+  // locator.registerFactory(() => PostsBloc());
   locator.registerFactory(() => NetworkService());
 }

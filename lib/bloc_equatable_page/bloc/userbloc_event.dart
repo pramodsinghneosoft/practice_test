@@ -11,6 +11,6 @@ class GetUserEvent extends UserblocEvent {
   GetUserEvent();
 }
 
-class GetPostsEvent extends UserblocEvent {
-  GetPostsEvent();
-}
+// class GetPostsEvent extends UserblocEvent {
+//   GetPostsEvent();
+// }

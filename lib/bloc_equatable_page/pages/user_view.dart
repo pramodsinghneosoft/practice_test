@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sqflite_test/bloc_equatable_page/bloc/posts_model_bloc/posts_bloc_view.dart';
+import 'package:sqflite_test/bloc_equatable_page/bloc/posts_model_bloc/posts_event.dart';
+import 'package:sqflite_test/bloc_equatable_page/bloc/posts_model_bloc/posts_state.dart';
 import 'package:sqflite_test/bloc_equatable_page/bloc/userbloc_bloc.dart';
 import 'package:sqflite_test/bloc_equatable_page/model/user_model.dart';
 import 'package:sqflite_test/bloc_equatable_page/pages/border_box_view.dart';
@@ -15,6 +18,9 @@ class _UserDataViewState extends State<UserDataView> {
     // ignore: close_sinks
     final userbloc = BlocProvider.of<UserblocBloc>(context);
     userbloc.add(GetUserEvent());
+    // ignore: close_sinks
+    final postsbloc = BlocProvider.of<PostsblocBloc>(context);
+    postsbloc.add(GetPostsEvent());
     // userbloc.add(GetPostsEvent());
     super.initState();
   }
@@ -40,19 +46,33 @@ class _UserDataViewState extends State<UserDataView> {
           )
         ],
       ),
-      body: Container(child: BlocBuilder<UserblocBloc, UserblocState>(
-        builder: (context, state) {
-          if (state is UserblocInitial) {
-            return Center(child: Text(""));
-          } else if (state is UserblocLoading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is UserblocLoaded) {
-            return _buildListwidget(context, state.userModel);
-          } else if (state is UserblocError) {
-            return Text(state.message);
-          } else {
-            return Container();
-          }
+      body: Container(child: BlocBuilder<PostsblocBloc, PostsblocState>(
+        builder: (context, statePosts) {
+          return BlocBuilder<UserblocBloc, UserblocState>(
+            // ignore: missing_return
+            builder: (context, state) {
+              if (state is UserblocInitial) {
+                return Center(child: Text(""));
+              } else if (statePosts is PostsblocInitial) {
+                return Center(child: Text(""));
+              } else if (statePosts is PostsblocLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (statePosts is PostsblocLoaded) {
+                print(statePosts.postsModel);
+              } else if (state is UserblocLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is UserblocLoaded) {
+                // print(state.postsmodel);
+                return _buildListwidget(context, state.userModel);
+              } else if (state is UserblocError) {
+                return Text(state.message);
+              } else if (statePosts is PostsblocError) {
+                return Text(statePosts.message);
+              } else {
+                return Container();
+              }
+            },
+          );
         },
       )),
     );
