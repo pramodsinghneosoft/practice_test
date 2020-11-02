@@ -30,13 +30,45 @@ class _StreamdataViewState extends State<StreamdataView> {
         body: StreamBuilder<List<String>>(
             stream: contactManager.contactlistNow,
             builder: (context, snapshot) {
-              contacts = snapshot.data;
-              return ListView.separated(
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(title: Text(contacts[index]));
-                  },
-                  separatorBuilder: (context, index) => Divider(),
-                  itemCount: getLength());
+              if (snapshot.hasData) {
+                contacts = snapshot.data;
+                return ListView.separated(
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(title: Text(contacts[index]));
+                    },
+                    separatorBuilder: (context, index) => Divider(),
+                    itemCount: getLength());
+              } else if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Text('Select a lot'),
+                    );
+                    break;
+                  case ConnectionState.waiting:
+                    return CircularProgressIndicator();
+                    break;
+                  case ConnectionState.active:
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text('\$${snapshot.data}'),
+                    );
+                    break;
+                  case ConnectionState.done:
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text('\$${snapshot.data} (closed)'),
+                    );
+                }
+              }
             }),
       ),
       length: 2,
