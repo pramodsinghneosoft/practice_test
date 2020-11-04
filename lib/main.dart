@@ -10,8 +10,12 @@ import 'package:sqflite_test/bloc_equatable_page/pages/user_view.dart';
 import 'package:sqflite_test/bloc_pattern/bloc_view.dart';
 import 'package:sqflite_test/bloc_pattern/posts_view.dart';
 import 'package:sqflite_test/bottom_tabbar/bottom_tab_view.dart';
+import 'package:sqflite_test/dark_theme_page/dark_theme_model.dart';
+import 'package:sqflite_test/dark_theme_page/styles.dart';
 import 'package:sqflite_test/email_validator_page/email_validate_page.dart';
 import 'package:sqflite_test/flappy_searchbar/flappy_search_view.dart';
+import 'package:sqflite_test/font_size_page/font_page_view.dart';
+import 'package:sqflite_test/font_size_page/font_size_model.dart';
 import 'package:sqflite_test/get_it_files/get_it_view.dart';
 import 'package:sqflite_test/get_it_files/service_locator_view.dart';
 import 'package:sqflite_test/getx_page/view/getx_page_view.dart';
@@ -27,6 +31,7 @@ import 'package:sqflite_test/provider_files/provider_counter_view.dart';
 import 'package:sqflite_test/provider_files/provider_model.dart';
 import 'package:sqflite_test/provider_files/provider_page/provider_model.dart';
 import 'package:sqflite_test/provider_files/provider_page/provider_page_view.dart';
+import 'package:sqflite_test/proxy_providers_page/person_model.dart';
 import 'package:sqflite_test/rating_bar/rating_bar_page.dart';
 import 'package:sqflite_test/recaptcha_page/recaptcha_page_view.dart';
 import 'package:sqflite_test/riverpod_page/riverpod_page_view.dart';
@@ -45,6 +50,8 @@ void main() {
   serviceLocator();
   // runApp(ProviderScope(child: MyApp()));
   // runApp(MyApp());
+  Provider.debugCheckInvalidValueType = null;
+
   runApp(StateContainerView(child: MyApp()));
 }
 
@@ -59,89 +66,113 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   AppTranslationDelegate _newLocalDelegate;
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
 
   @override
   void initState() {
     _newLocalDelegate = AppTranslationDelegate(newLocale: null);
     Application().onLocalChanged = onLocalChange;
+    getCurrentAppTheme();
+
     super.initState();
+  }
+
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+        await themeChangeProvider.darkThemePreference.getTheme();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'SQFLite Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      navigatorKey: locator<NavigatorService>().navigatorKey,
-      // home: RiverUserView(),
+    return ChangeNotifierProvider<DarkThemeProvider>(
+      create: (_) => DarkThemeProvider(),
+      child: Consumer<DarkThemeProvider>(builder: (context, value, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'SQFLite Demo',
+          // theme: ThemeData(
+          //   primarySwatch: Colors.blue,
+          //   visualDensity: VisualDensity.adaptivePlatformDensity,
+          // ),
+          theme: Styles.themeData(value.darkTheme, context),
+          navigatorKey: locator<NavigatorService>().navigatorKey,
+          // home: RiverUserView(),
 
-      // home: RiverPodPageView(),
-      home: BlocProvider(
-          create: (context) => UserblocBloc(UserRepositoryImpl()),
-          child: MultiProvider(providers: [
-            ChangeNotifierProvider<ProviderModel>(
-              create: (_) => ProviderModel(),
-            ),
-            ChangeNotifierProvider<ProviderCounterModel>(
-              create: (_) => ProviderCounterModel(),
-            )
-          ], child: ProviderPageView()
-              //  InheritedWidgetPageView(),
-              //  RatingBarPage()
-              // LocalizaPageView()
-              // EmailValidatorPage(),
-              // GetXPageView(),
-              //  SliverPageView()
-              // RecaptchaPageView()
-              // UserDataView()
-              // SpeechTextView()
-              // WordPressApiView(),
-              // FilterListviewView()
-              // FlappySearchBarView()
-              // BottomTabbarView(),
-              // TabbarView(),
-              // PostsView()
-              // GetItView(),
-              // MyHomePage(),
-              // LocalizationView(),
-              // MyHomePage(),
-              // SQFLiteView()
-              // ProviderView()
-              )),
-      // home: StreamdataView(),
-      // home:SQFLiteView()
-      onGenerateRoute: (routeSettings) {
-        switch (routeSettings.name) {
-          case 'myhomepage':
-            return MaterialPageRoute(builder: (context) => MyHomePage());
-          default:
-            return MaterialPageRoute(builder: (context) => MyHomePage());
-        }
-      },
+          // home: RiverPodPageView(),
+          home: BlocProvider(
+              create: (context) => UserblocBloc(UserRepositoryImpl()),
+              child: MultiProvider(providers: [
+                ChangeNotifierProvider<ProviderModel>(
+                  create: (_) => ProviderModel(),
+                ),
+                ChangeNotifierProvider<ProviderCounterModel>(
+                  create: (_) => ProviderCounterModel(),
+                ),
+                ChangeNotifierProvider<FontModel>(
+                  create: (_) => FontModel(),
+                ),
+                Provider.value(
+                  value: Api(),
+                ),
+                ProxyProvider(
+                  update: (context, api, model) => HomeModel(api: api),
+                )
+              ], child: FontSizePageView()
+                  // ProviderPageView()
+                  //  InheritedWidgetPageView(),
+                  //  RatingBarPage()
+                  // LocalizaPageView()
+                  // EmailValidatorPage(),
+                  // GetXPageView(),
+                  //  SliverPageView()
+                  // RecaptchaPageView()
+                  // UserDataView()
+                  // SpeechTextView()
+                  // WordPressApiView(),
+                  // FilterListviewView()
+                  // FlappySearchBarView()
+                  // BottomTabbarView(),
+                  // TabbarView(),
+                  // PostsView()
+                  // GetItView(),
+                  // MyHomePage(),
+                  // LocalizationView(),
+                  // MyHomePage(),
+                  // SQFLiteView()
+                  // ProviderView()
+                  )),
+          // home: StreamdataView(),
+          // home:SQFLiteView()
+          onGenerateRoute: (routeSettings) {
+            switch (routeSettings.name) {
+              case 'myhomepage':
+                return MaterialPageRoute(builder: (context) => MyHomePage());
+              default:
+                return MaterialPageRoute(builder: (context) => MyHomePage());
+            }
+          },
 
-      localizationsDelegates: [
-        _newLocalDelegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
-      supportedLocales: [
-        const Locale("en", "US"),
-        const Locale("hi", "IN"),
-        const Locale("pt", "PT"),
-      ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (var supportedLocaleLanguage in supportedLocales) {
-          if (supportedLocaleLanguage.languageCode == locale.languageCode &&
-              supportedLocaleLanguage.countryCode == locale.countryCode) {
-            return supportedLocaleLanguage;
-          }
-        }
-        return supportedLocales.first;
-      },
+          localizationsDelegates: [
+            _newLocalDelegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          supportedLocales: [
+            const Locale("en", "US"),
+            const Locale("hi", "IN"),
+            const Locale("pt", "PT"),
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            for (var supportedLocaleLanguage in supportedLocales) {
+              if (supportedLocaleLanguage.languageCode == locale.languageCode &&
+                  supportedLocaleLanguage.countryCode == locale.countryCode) {
+                return supportedLocaleLanguage;
+              }
+            }
+            return supportedLocales.first;
+          },
+        );
+      }),
     );
   }
 
