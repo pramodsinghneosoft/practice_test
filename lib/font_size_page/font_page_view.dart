@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_test/dark_theme_page/dark_theme_page_view.dart';
+import 'package:sqflite_test/factory_key_page/factory_view_page.dart';
 import 'package:sqflite_test/font_size_page/fontPageView.dart';
 import 'package:sqflite_test/font_size_page/font_size_model.dart';
 import 'package:sqflite_test/font_size_page/shared_preference_view.dart';
+import 'package:sqflite_test/generator_page/generator_page.dart';
+import 'package:sqflite_test/hero_tag_page/hero_tag_page_view.dart';
+import 'package:sqflite_test/hive_page/hive_page_view.dart';
 import 'package:sqflite_test/provider_files/provider_types/future_provider_page.dart';
 import 'package:sqflite_test/proxy_providers_page/proxy_providers_page.dart';
+import 'package:sqflite_test/sqlite_page/employee_page_view.dart';
 
 class FontSizePageView extends StatefulWidget {
   @override
@@ -39,7 +44,7 @@ class _FontSizePageViewState extends State<FontSizePageView> {
                 // Get.to(ProxyProviderPage());
                 Get.to(ProviderPageTypes());
               },
-              child: Icon(Icons.circle))
+              child: Icon(Icons.circle)),
         ],
       ),
       body: Container(
@@ -82,7 +87,26 @@ class _FontSizePageViewState extends State<FontSizePageView> {
                         TextStyle(fontSize: fontSizeValue, color: Colors.black),
                   ),
                   SizedBox(height: 80),
-                  _fractionalSizedBoxWidget()
+                  _fractionalSizedBoxWidget(),
+                  FlatButton(
+                      onPressed: () {
+                        Get.to(EmployeePageView());
+                      },
+                      child: Text("Next page")),
+                  FlatButton(
+                    child: Text("Next Page 2"),
+                    onPressed: () {
+                      Get.to(HeroTagPageView());
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("Next Page 3"),
+                    onPressed: () {
+                      // Get.to(FactoryPage());
+                      // Get.to(HivePage());
+                      Get.to(GeneratorPage());
+                    },
+                  ),
                 ],
               ));
         }),
