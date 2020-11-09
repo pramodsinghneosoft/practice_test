@@ -34,6 +34,7 @@ class _GeneratorPageState extends State<GeneratorPage> {
     int geek = 0;
     while (geek < 10) {
       yield geek++;
+      print(geek);
     }
   }
 
